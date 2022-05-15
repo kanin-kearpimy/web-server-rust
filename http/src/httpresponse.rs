@@ -16,7 +16,6 @@ pub enum Status{
 }
 
 
-
 #[derive(Debug, PartialEq)]
 pub enum ReasonPharse {
     Ok,
@@ -35,13 +34,14 @@ pub struct HttpResponse {
 }
 
 impl From<String> for HttpResponse {
-    fn from(response: String) -> HttpResponse {
+    fn from(response: String) -> HttpResponse { // response = "HTTP/2.0 200 Ok!\r\nLocation: /local-path\r\n\r\nThis is http response."
         let mut parsed_version = Version::Uninitialized;
         let mut parsed_status = Status::Uninitialized;
         let mut parsed_reason = ReasonPharse::Uninitialized;
         let mut parsed_headers = HashMap::new();
         let mut parsed_body = "".to_string();
-
+        
+        // response.lines() = ["HTTP/2.0 200 Ok!", "Location: /local-path", "" ,"This is http response."]
         for line in response.lines() {
             if line.contains("HTTP") {
                 let (version, status, reason) = process_response_line(line);
@@ -150,14 +150,14 @@ mod test {
         assert_eq!(status500, Status::FiveHundred);
     }
     #[test]
-    fn test_ReasonPharse(){
-        let ReasonPharse_Ok:  ReasonPharse ="Ok!".into();
-        let ReasonPharse_BadRequest: ReasonPharse ="BadRequest!".into();
-        let ReasonPharse_InternalServerError: ReasonPharse = "InternalServerError!".into();
+    fn test_reason_pharse(){
+        let reason_pharse_ok:  ReasonPharse ="Ok!".into();
+        let reason_pharse_bad_request: ReasonPharse ="BadRequest!".into();
+        let reason_pharse_internal_server_error: ReasonPharse = "InternalServerError!".into();
 
-        assert_eq!(ReasonPharse_Ok, ReasonPharse::Ok);
-        assert_eq!(ReasonPharse_BadRequest,ReasonPharse::BadRequest);
-        assert_eq!(ReasonPharse_InternalServerError, ReasonPharse::InternalServerError); 
+        assert_eq!(reason_pharse_ok, ReasonPharse::Ok);
+        assert_eq!(reason_pharse_bad_request,ReasonPharse::BadRequest);
+        assert_eq!(reason_pharse_internal_server_error, ReasonPharse::InternalServerError); 
     }
 
     #[test]
